@@ -72,7 +72,10 @@ public class EmployeeResourceImpl implements EmployeeResource {
    */
   @Override
   @RequestMapping(value = "/v1/bfs/employees", method = RequestMethod.POST)
-  public ResponseEntity<Employee> createEmployee( @Valid @RequestBody Employee employee, @Valid @RequestHeader("idempotent-key") @Pattern(regexp = "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$", message = "must be valid UUID") UUID idempotentKey) {
+  public ResponseEntity<Employee> createEmployee( @Valid @RequestBody Employee employee,
+      @Valid @RequestHeader("idempotent-key")
+      @Pattern(regexp = "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$",
+          message = "must be valid UUID") UUID idempotentKey) {
 
     List<EmployeeIdempotentKeyData> idempotentKeyDataList = idempotentKeyDataDAO.
         findByIdempotentKey(idempotentKey);
