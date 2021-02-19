@@ -64,7 +64,7 @@ public class GetEmployeeTest {
   @Test
   public void testGetEmployeeForExistentEmployee() {
     Employee employee = createEmployeeTestWithAllValidata();
-    Response response = getEmployee(1, getClient());
+    Response response = getEmployee(employee.getId(), getClient());
     Assert.assertEquals(response.getStatus(), HttpStatus.OK.value());
     Employee result = response.readEntity(Employee.class);
     Assert.assertNotNull(result);
