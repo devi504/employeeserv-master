@@ -91,7 +91,7 @@ public class EmployeeResourceImplTest {
 
     RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v1/bfs/employees")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(employee).header("idempotent-key", random.nextInt())
+        .content(employee).header("idempotent-key", UUID.randomUUID())
         .accept(MediaType.APPLICATION_JSON);
     MvcResult result = mockMvc.perform(requestBuilder).andReturn();
     Assert.assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
