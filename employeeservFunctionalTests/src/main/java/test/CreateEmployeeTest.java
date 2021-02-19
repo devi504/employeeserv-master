@@ -6,6 +6,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.paypal.bfs.test.employeeserv.api.model.Address;
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
 import java.util.Random;
+import java.util.UUID;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -21,9 +22,9 @@ public class CreateEmployeeTest {
   private static final String REST_URI
       = "http://localhost:8080/v1/bfs/employees";
 
-  Random rd = new Random();
 
-  public Response getJsonEmployee(Employee employee, int idempotentKey, Client client) {
+
+  public Response getJsonEmployee(Employee employee, UUID idempotentKey, Client client) {
     return client
         .target(REST_URI)
         .request(MediaType.APPLICATION_JSON).header("idempotent-key", idempotentKey)
@@ -51,7 +52,8 @@ public class CreateEmployeeTest {
     address.setZipcode("2324242");
     employee.setAddress(address);
 
-    Response response = getJsonEmployee(employee, rd.nextInt(), getClient());
+    UUID rd = UUID.randomUUID();
+    Response response = getJsonEmployee(employee, rd, getClient());
     Assert.assertEquals(response.getStatus(), HttpStatus.CREATED.value());
   }
 
@@ -69,7 +71,9 @@ public class CreateEmployeeTest {
     address.setCountry("afdfs");
     address.setZipcode("2324242");
     employee.setAddress(address);
-    Response response = getJsonEmployee(employee, rd.nextInt(), getClient());
+
+    UUID rd = UUID.randomUUID();
+    Response response = getJsonEmployee(employee, rd, getClient());
     Assert.assertEquals(response.getStatus(), HttpStatus.BAD_REQUEST.value());
 
     com.paypal.bfs.test.employeeserv.exception.BfsValidationError bfsValidationError = new ObjectMapper()
@@ -96,7 +100,8 @@ public class CreateEmployeeTest {
     address.setCountry("afdfs");
     address.setZipcode("2324242");
     employee.setAddress(address);
-    Response response = getJsonEmployee(employee, rd.nextInt(), getClient());
+    UUID rd = UUID.randomUUID();
+    Response response = getJsonEmployee(employee, rd, getClient());
     Assert.assertEquals(response.getStatus(), HttpStatus.BAD_REQUEST.value());
 
     com.paypal.bfs.test.employeeserv.exception.BfsValidationError bfsValidationError = new ObjectMapper()
@@ -121,7 +126,8 @@ public class CreateEmployeeTest {
     address.setCountry("afdfs");
     address.setZipcode("2324242234");
     employee.setAddress(address);
-    Response response = getJsonEmployee(employee, rd.nextInt(), getClient());
+    UUID rd = UUID.randomUUID();
+    Response response = getJsonEmployee(employee, rd, getClient());
     Assert.assertEquals(response.getStatus(), HttpStatus.CREATED.value());
   }
 

@@ -1,6 +1,9 @@
 package com.paypal.bfs.test.employeeserv.api;
 
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
+import java.util.UUID;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +22,12 @@ public interface EmployeeResource {
      * @return {@link Employee} resource.
      */
     @RequestMapping("/v1/bfs/employees/{id}")
-    ResponseEntity<Employee> employeeGetById(@PathVariable("id") String id);
+    ResponseEntity<Employee> employeeGetById(@Valid @PathVariable("id") @Pattern(regexp = "^[0-9]*$", message = "must be a number") String id);
 
     // ----------------------------------------------------------
     // TODO - add a new operation for creating employee resource.
     // ----------------------------------------------------------
 
     @RequestMapping("/v1/bfs/employees")
-    ResponseEntity<Employee> createEmployee( @RequestBody Employee employee, @RequestHeader("idempotent-key") int idempotentKey);
+    ResponseEntity<Employee> createEmployee( @Valid @RequestBody Employee employee, @Valid @RequestHeader("idempotent-key") @Pattern(regexp = "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$", message = "must be valid UUID") UUID idempotentKey);
 }

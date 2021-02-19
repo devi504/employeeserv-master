@@ -1,16 +1,20 @@
 package com.paypal.bfs.test.employeeserv.impl;
 
+import com.google.common.primitives.Ints;
 import com.paypal.bfs.test.employeeserv.api.EmployeeResource;
 import com.paypal.bfs.test.employeeserv.data.EmployeeDAO;
 import com.paypal.bfs.test.employeeserv.data.EmployeeIdempotentKeyData;
 import com.paypal.bfs.test.employeeserv.data.EmployeeIdempotentKeyDataDAO;
 import com.paypal.bfs.test.employeeserv.api.model.Address;
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
+import java.util.UUID;
+import javax.validation.constraints.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -41,11 +45,14 @@ public class EmployeeResourceImpl implements EmployeeResource {
    */
   @Override
   @RequestMapping(value = "/v1/bfs/employees/{id}", method = RequestMethod.GET)
-  public ResponseEntity<Employee> employeeGetById(@PathVariable("id") String id) {
+  public ResponseEntity<Employee> employeeGetById(
+      @Valid @PathVariable("id") @Pattern(regexp = "^[0-9]*$", message = "must be a number") String id) {
 
     LOG.info("getting employee {}", id);
+
+    Integer empId = Ints.tryParse(id) == null?0:Integer.parseInt(id);
     Optional<com.paypal.bfs.test.employeeserv.data.Employee> employee1 = employeeDAO.findById(
-        Integer.parseInt(id));
+        empId);
 
     if (employee1.isPresent()) {
       LOG.info("found employee {}", employee1.get());
@@ -53,20 +60,19 @@ public class EmployeeResourceImpl implements EmployeeResource {
       return new ResponseEntity<>(response, HttpStatus.OK);
     } else {
       LOG.info(" not found employee for {}", id);
-      throw new com.paypal.bfs.test.employeeserv.exception.BfsBusinessException("employee not found", "id", "request param",
+      throw new com.paypal.bfs.test.employeeserv.exception.BfsBusinessException(
+          "employee not found", "id", "request param",
           HttpStatus.NOT_FOUND);
     }
 
   }
 
   /**
-   * Creates employee.
-   * idempotentKey is a unique id used for making post idempotent
+   * Creates employee. idempotentKey is a unique id used for making post idempotent
    */
   @Override
   @RequestMapping(value = "/v1/bfs/employees", method = RequestMethod.POST)
-  public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee,
-      @RequestHeader("idempotent-key") int idempotentKey) {
+  public ResponseEntity<Employee> createEmployee( @Valid @RequestBody Employee employee, @Valid @RequestHeader("idempotent-key") @Pattern(regexp = "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$", message = "must be valid UUID") UUID idempotentKey) {
 
     List<EmployeeIdempotentKeyData> idempotentKeyDataList = idempotentKeyDataDAO.
         findByIdempotentKey(idempotentKey);
@@ -88,7 +94,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
   }
 
   private com.paypal.bfs.test.employeeserv.data.Employee saveEmployeeToRepository(Employee employee,
-      int idempotentKey) {
+      UUID idempotentKey) {
 
     com.paypal.bfs.test.employeeserv.data.Employee employeeData = new com.paypal.bfs.test.employeeserv.data.Employee(
         employee.getFirstName(), employee.getLastName());
@@ -96,7 +102,8 @@ public class EmployeeResourceImpl implements EmployeeResource {
     try {
       dob = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(employee.getDob()).getTime() / 1000;
     } catch (ParseException e) {
-      throw new com.paypal.bfs.test.employeeserv.exception.BfsBusinessException("wrong data format", null, null, HttpStatus.BAD_REQUEST);
+      throw new com.paypal.bfs.test.employeeserv.exception.BfsBusinessException("wrong data format",
+          null, null, HttpStatus.BAD_REQUEST);
     }
     com.paypal.bfs.test.employeeserv.data.Address addressData = new com.paypal.bfs.test.employeeserv.data.Address();
     addressData.setLine1(employee.getAddress().getLine1());

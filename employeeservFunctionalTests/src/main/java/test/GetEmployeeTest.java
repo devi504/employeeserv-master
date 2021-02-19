@@ -3,6 +3,7 @@ package test;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.paypal.bfs.test.employeeserv.api.model.Address;
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -18,9 +19,8 @@ public class GetEmployeeTest {
 
   private static final String REST_URI
       = "http://localhost:8080/v1/bfs/employees";
-  Random rd = new Random();
 
-  public Employee createEmployee(Employee employee, int idempotentKey, Client client) {
+  public Employee createEmployee(Employee employee, UUID idempotentKey, Client client) {
 
     return client
         .target(REST_URI)
@@ -57,7 +57,8 @@ public class GetEmployeeTest {
     address.setCountry("afdfs");
     address.setZipcode("2324242");
     employee.setAddress(address);
-    return createEmployee(employee, rd.nextInt(), getClient());
+    UUID rd = UUID.randomUUID();
+    return createEmployee(employee, rd, getClient());
   }
 
   @Test
@@ -73,7 +74,8 @@ public class GetEmployeeTest {
   @Test
   public void testGetEmployeeForNonExistentEmployee() {
     Employee employee = createEmployeeTestWithAllValidata();
-    Response response = getEmployee(rd.nextInt(), getClient());
+    Random random = new Random();
+    Response response = getEmployee(random.nextInt(), getClient());
     Assert.assertEquals(response.getStatus(), HttpStatus.NOT_FOUND.value());
 
   }

@@ -1,5 +1,6 @@
 package com.paypal.bfs.test.employeeserv.data;
 
+import java.util.UUID;
 import javax.persistence.*;
 
 @Entity
@@ -11,7 +12,7 @@ public class EmployeeIdempotentKeyData {
   Integer id;
 
   @Column(name = "IDEMPOTENT_KEY")
-  private Integer idempotentKey;
+  private UUID idempotentKey;
 
   @OneToOne(fetch = FetchType.LAZY)
   private Employee employee;
@@ -24,11 +25,11 @@ public class EmployeeIdempotentKeyData {
     this.id = id;
   }
 
-  public Integer getIdempotentKey() {
+  public UUID getIdempotentKey() {
     return idempotentKey;
   }
 
-  public void setIdempotentKey(Integer idempotentKey) {
+  public void setIdempotentKey(UUID idempotentKey) {
     this.idempotentKey = idempotentKey;
   }
 
