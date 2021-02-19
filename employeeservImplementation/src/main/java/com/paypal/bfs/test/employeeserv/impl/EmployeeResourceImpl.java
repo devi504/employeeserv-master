@@ -74,6 +74,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
 
   /**
    * Creates employee. idempotentKey is a unique id used for making post idempotent
+   * valid idempotentKey is UUID version4
    */
   @Override
   @RequestMapping(value = "/v1/bfs/employees", method = RequestMethod.POST)

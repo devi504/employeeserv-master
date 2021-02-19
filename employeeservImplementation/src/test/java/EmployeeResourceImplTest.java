@@ -3,6 +3,7 @@ package com.paypal.bfs.test;
 
 import com.paypal.bfs.test.employeeserv.EmployeeservApplication;
 import com.paypal.bfs.test.employeeserv.impl.EmployeeResourceImpl;
+import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +64,7 @@ public class EmployeeResourceImplTest {
 
     RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v1/bfs/employees")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(employee).header("idempotent-key", random.nextInt())
+        .content(employee).header("idempotent-key", UUID.randomUUID())
         .accept(MediaType.APPLICATION_JSON);
     MvcResult result = mockMvc.perform(requestBuilder).andReturn();
     Assert.assertEquals(result.getResponse().getStatus(), HttpStatus.CREATED.value());
