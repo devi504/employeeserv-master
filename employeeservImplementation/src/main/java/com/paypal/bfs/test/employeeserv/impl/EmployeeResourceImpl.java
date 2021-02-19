@@ -7,6 +7,7 @@ import com.paypal.bfs.test.employeeserv.data.EmployeeIdempotentKeyData;
 import com.paypal.bfs.test.employeeserv.data.EmployeeIdempotentKeyDataDAO;
 import com.paypal.bfs.test.employeeserv.api.model.Address;
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
+import com.paypal.bfs.test.employeeserv.exception.BfsBusinessException;
 import java.util.UUID;
 import javax.validation.constraints.Pattern;
 import org.slf4j.Logger;
@@ -46,11 +47,15 @@ public class EmployeeResourceImpl implements EmployeeResource {
   @Override
   @RequestMapping(value = "/v1/bfs/employees/{id}", method = RequestMethod.GET)
   public ResponseEntity<Employee> employeeGetById(
-      @Valid @PathVariable("id") @Pattern(regexp = "^[0-9]*$", message = "must be a number") String id) {
-
+      @PathVariable("id") String id) {
+    int empId;
+    try {
+      empId = Integer.parseInt(id);
+    } catch (NumberFormatException e) {
+      throw new BfsBusinessException("id must be a number", "id", "path variable",
+          HttpStatus.BAD_REQUEST);
+    }
     LOG.info("getting employee {}", id);
-
-    Integer empId = Ints.tryParse(id) == null?0:Integer.parseInt(id);
     Optional<com.paypal.bfs.test.employeeserv.data.Employee> employee1 = employeeDAO.findById(
         empId);
 
@@ -72,8 +77,8 @@ public class EmployeeResourceImpl implements EmployeeResource {
    */
   @Override
   @RequestMapping(value = "/v1/bfs/employees", method = RequestMethod.POST)
-  public ResponseEntity<Employee> createEmployee( @Valid @RequestBody Employee employee,
-      @Valid @RequestHeader("idempotent-key")
+  public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee,
+      @RequestHeader("idempotent-key")
       @Pattern(regexp = "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$",
           message = "must be valid UUID") UUID idempotentKey) {
 
@@ -120,8 +125,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
     idempotentKeyData.setIdempotentKey(idempotentKey);
     employeeData.setIdempotentData(idempotentKeyData);
     employeeData.setDateOfBirth(dob);
-    com.paypal.bfs.test.employeeserv.data.Employee employee1 = employeeDAO.save(employeeData);
-    return employee1;
+    return employeeDAO.save(employeeData);
 
   }
 
