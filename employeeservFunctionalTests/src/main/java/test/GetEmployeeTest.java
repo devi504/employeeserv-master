@@ -68,7 +68,6 @@ public class GetEmployeeTest {
     Assert.assertEquals(response.getStatus(), HttpStatus.OK.value());
     Employee result = response.readEntity(Employee.class);
     Assert.assertNotNull(result);
-    Assert.assertEquals(result.getFirstName(), "aaaaaaaaaa");
   }
 
   @Test
