@@ -24,11 +24,6 @@
             <version>2.1.1</version>
         </dependency>
         <dependency>
-            <groupId>com.paypal.bfs.test</groupId>
-            <artifactId>employeeservApi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
             <version>3.0.12.Final</version>
@@ -40,9 +35,14 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <artifactId>employeeservImplementation</artifactId>
+            <artifactId>employeeservApi</artifactId>
             <groupId>com.paypal.bfs.test</groupId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.paypal.bfs.test</groupId>
+            <artifactId>employeeservCommon</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>

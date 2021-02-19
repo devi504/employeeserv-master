@@ -6,7 +6,6 @@ import com.paypal.bfs.test.employeeserv.data.EmployeeIdempotentKeyData;
 import com.paypal.bfs.test.employeeserv.data.EmployeeIdempotentKeyDataDAO;
 import com.paypal.bfs.test.employeeserv.api.model.Address;
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
-import com.paypal.bfs.test.employeeserv.exception.BfsBusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +40,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
    * @param id employee id.
    */
   @Override
-  @RequestMapping("/v1/bfs/employees/{id}")
+  @RequestMapping(value = "/v1/bfs/employees/{id}", method = RequestMethod.GET)
   public ResponseEntity<Employee> employeeGetById(@PathVariable("id") String id) {
 
     LOG.info("getting employee {}", id);
@@ -56,7 +53,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
       return new ResponseEntity<>(response, HttpStatus.OK);
     } else {
       LOG.info(" not found employee for {}", id);
-      throw new BfsBusinessException("employee not found", "id", "request param",
+      throw new com.paypal.bfs.test.employeeserv.exception.BfsBusinessException("employee not found", "id", "request param",
           HttpStatus.NOT_FOUND);
     }
 
@@ -64,9 +61,10 @@ public class EmployeeResourceImpl implements EmployeeResource {
 
   /**
    * Creates employee.
+   * idempotentKey is a unique id used for making post idempotent
    */
   @Override
-  @RequestMapping("/v1/bfs/employees")
+  @RequestMapping(value = "/v1/bfs/employees", method = RequestMethod.POST)
   public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee,
       @RequestHeader("idempotent-key") int idempotentKey) {
 
@@ -75,6 +73,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
 
     com.paypal.bfs.test.employeeserv.data.Employee employee1;
     if (CollectionUtils.isEmpty(idempotentKeyDataList)) {
+      LOG.info("creating new employee");
       employee1 = saveEmployeeToRepository(employee, idempotentKey);
       Employee response = prepareResponseEntity(employee1);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -97,7 +96,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
     try {
       dob = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(employee.getDob()).getTime() / 1000;
     } catch (ParseException e) {
-      throw new BfsBusinessException("wrong data format", null, null, HttpStatus.BAD_REQUEST);
+      throw new com.paypal.bfs.test.employeeserv.exception.BfsBusinessException("wrong data format", null, null, HttpStatus.BAD_REQUEST);
     }
     com.paypal.bfs.test.employeeserv.data.Address addressData = new com.paypal.bfs.test.employeeserv.data.Address();
     addressData.setLine1(employee.getAddress().getLine1());

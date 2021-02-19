@@ -7,6 +7,7 @@
         <module>employeeservApi</module>
         <module>employeeservImplementation</module>
         <module>employeeservFunctionalTests</module>
+      <module>employeeservCommon</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

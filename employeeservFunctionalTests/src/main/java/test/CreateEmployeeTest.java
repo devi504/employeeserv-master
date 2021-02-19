@@ -5,17 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.paypal.bfs.test.employeeserv.api.model.Address;
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
-import com.paypal.bfs.test.employeeserv.exception.BfsValidationError;
-import org.springframework.http.HttpStatus;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
+import java.util.Random;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Random;
+import org.springframework.http.HttpStatus;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 
 public class CreateEmployeeTest {
@@ -74,9 +72,9 @@ public class CreateEmployeeTest {
     Response response = getJsonEmployee(employee, rd.nextInt(), getClient());
     Assert.assertEquals(response.getStatus(), HttpStatus.BAD_REQUEST.value());
 
-    BfsValidationError bfsValidationError = new ObjectMapper()
+    com.paypal.bfs.test.employeeserv.exception.BfsValidationError bfsValidationError = new ObjectMapper()
         .readValue(response.readEntity(String.class),
-            BfsValidationError.class);
+            com.paypal.bfs.test.employeeserv.exception.BfsValidationError.class);
     Assert.assertNotNull(bfsValidationError);
     Assert.assertNotNull(bfsValidationError.getValidationErrors());
     Assert.assertTrue(bfsValidationError.getValidationErrors().size() == 1);
@@ -101,9 +99,9 @@ public class CreateEmployeeTest {
     Response response = getJsonEmployee(employee, rd.nextInt(), getClient());
     Assert.assertEquals(response.getStatus(), HttpStatus.BAD_REQUEST.value());
 
-    BfsValidationError bfsValidationError = new ObjectMapper()
+    com.paypal.bfs.test.employeeserv.exception.BfsValidationError bfsValidationError = new ObjectMapper()
         .readValue(response.readEntity(String.class),
-            BfsValidationError.class);
+            com.paypal.bfs.test.employeeserv.exception.BfsValidationError.class);
     Assert.assertNotNull(bfsValidationError);
     Assert.assertNotNull(bfsValidationError.getValidationErrors());
     Assert.assertTrue(bfsValidationError.getValidationErrors().size() == 1);
