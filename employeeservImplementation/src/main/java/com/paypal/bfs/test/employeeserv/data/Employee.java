@@ -2,8 +2,14 @@ package com.paypal.bfs.test.employeeserv.data;
 
 import javax.persistence.*;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
 public class Employee {
 
   @Column(name = "EMPLOYEE_ID")
@@ -21,44 +27,8 @@ public class Employee {
   @JoinColumn(name = "idempotentKey", referencedColumnName = "IDEMPOTENT_KEY")
   private EmployeeIdempotentKeyData idempotentData;
 
-  public Employee() {
-  }
-
   public Employee(String firstName, String lastName) {
     this.firstName = firstName;
-    this.lastName = lastName;
-  }
-
-  public EmployeeIdempotentKeyData getIdempotentData() {
-    return idempotentData;
-  }
-
-  public void setIdempotentData(EmployeeIdempotentKeyData idempotentData) {
-    this.idempotentData = idempotentData;
-  }
-
-
-  public Integer getEmployeeId() {
-    return employeeId;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setEmployeeId(Integer employeeId) {
-    this.employeeId = employeeId;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public void setLastName(String lastName) {
     this.lastName = lastName;
   }
 
@@ -81,25 +51,10 @@ public class Employee {
     return Objects.hash(employeeId, firstName, lastName);
   }
 
-  public Address getAddress() {
-    return address;
-  }
-
-  public void setAddress(Address address) {
-    this.address = address;
-  }
-
   @PrePersist
   @PreUpdate
   public void updateIdempotentKeyData() {
     idempotentData.setEmployee(this);
   }
 
-  public long getDateOfBirth() {
-    return dateOfBirth;
-  }
-
-  public void setDateOfBirth(long dateOfBirth) {
-    this.dateOfBirth = dateOfBirth;
-  }
 }
