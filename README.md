@@ -19,6 +19,7 @@ There are three modules in this application
 - Use command `mvn spring-boot:run` from `employeeservImplementation` folder to run the project.
 - Use postman or curl to access `http://localhost:8080/v1/bfs/employees/1` GET endpoint. It will return an Employee resource.
 
+## Requirement
 
 - `employee.json` has only `name`, and `employeeId` elements. Please add `date of birth` and `address` elements to the `Employee` resource. Address will have `line1`, `line2`, `city`, `state`, `country` and `zip_code` elements. `line2` is an optional element.
 - Add one more operation in `EmployeeResource` to create an employee. `EmployeeResource` will have two operations, one to create, and another to retrieve the employee resource.
