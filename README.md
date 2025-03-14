@@ -19,17 +19,5 @@ There are three modules in this application
 - Use command `mvn spring-boot:run` from `employeeservImplementation` folder to run the project.
 - Use postman or curl to access `http://localhost:8080/v1/bfs/employees/1` GET endpoint. It will return an Employee resource.
 
-## Requirement
-
-- `employee.json` has only `name`, and `employeeId` elements. Please add `date of birth` and `address` elements to the `Employee` resource. Address will have `line1`, `line2`, `city`, `state`, `country` and `zip_code` elements. `line2` is an optional element.
-- Add one more operation in `EmployeeResource` to create an employee. `EmployeeResource` will have two operations, one to create, and another to retrieve the employee resource.
-- Implement create and retrieve operations in `EmployeeResourceImpl.java`.
-- Resource created using create endpoint should be retrieved using retrieve/get endpoint.
-- Please add the unit tests to validate your implementation.
-- Please use h2 in-memory database or any other in-memory database to persist the `Employee` resource. Dependency for h2 in-memory database is already added to the parent pom.
-- Please make sure the validations are done for the requests.
-- Response codes are as per rest guidelines.
-- Error handling in case of failures.
-- Idempotency logic is implemented to avoid duplicate resource creation.
 
 
